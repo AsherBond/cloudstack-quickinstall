@@ -1,0 +1,32 @@
+{
+	"cloudstack_host": {
+		"mgmt_ipaddr":		"192.168.25.110",
+		"mgmt_fqdn":		"cs-manager.example.jp",
+		"mgmt_hostname":	"cs-manager",
+		"host_ipaddr":		"192.168.25.111",
+		"host_fqdn":		"cs-host.example.jp",
+		"host_hostname":	"cs-host",
+		"domainname":		"example.jp",
+		"epel_release_uri":	"http://ftp.jaist.ac.jp/pub/Linux/Fedora/epel/6/x86_64/",
+		"epel_release_rpm":	"epel-release-6-7.noarch.rpm",
+		"epel_release_sha256":	"d75c1eaa87b672a40e30086012d5ef19807432095fb8dc50a4d813f8fd3123fb",
+
+		"tarball_base_uri":	"http://download.cloud.com/releases/3.0.4/",
+		"tarball_basename":	"CloudStack-3.0.4-1-rhel6.2",
+		"tarball_sha256":	"0b9b3d38bd33bcf607250f0103f119f9dc5eb12848d58410187ecfbbdfba22a6",
+		"mysql_root_name":	"root",
+		"mysql_root_pass":	"myroot1234",
+		"mysql_user_name":	"cloud",
+		"mysql_user_pass":	"myuser1234",
+		"nfs_root_dir":		"/export",
+		"nfs_primary_dir":	"primary",
+		"nfs_secondary_dir":	"secondary",
+		"systemvm_base_uri":	"http://download.cloud.com/templates/acton/",
+		"systemvm_filename":	"acton-systemvm-02062012.qcow2.bz2",
+		"systemvm_sha256":	"67dfc81297368ce605449454776a97d69f5c7bf5f90dbfe9cb49046fea3fff8a"
+	},
+	"run_list": [
+		"recipe[selinux::permissive]",
+		"recipe[cloudstack_host]"
+	]
+}
