@@ -33,6 +33,14 @@ if node[ :cloudstack_host ][ :epel_release_rpm ] != ''
 end
 
 #
+# install bridge-utils
+#
+package "install_bridge-utils" do
+  package_name "bridge-utils"
+  action :install
+end
+
+#
 # download CloudStack tarball
 #
 remote_file "/root/#{node[ :cloudstack_host ][ :tarball_basename ]}.tar.gz" do
