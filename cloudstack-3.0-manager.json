@@ -1,6 +1,6 @@
 {
 	"cloudstack": {
-		"version":		"2.2.14",
+		"version":		"3.0.4",
 		"mgmt_ipaddr":		"192.168.26.110",
 		"mgmt_fqdn":		"cs-manager.example.jp",
 		"mgmt_hostname":	"cs-manager",
@@ -12,5 +12,5 @@
 		"host_hostname":	"cs-host",
 		"domainname":		"example.jp"
 	},
-	"run_list": [ "recipe[cloudstack-quickinstall::host]" ]
+	"run_list": [ "recipe[cloudstack-quickinstall::manager]" ]
 }

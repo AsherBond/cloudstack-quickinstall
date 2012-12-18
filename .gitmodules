@@ -1,3 +1,9 @@
 [submodule "opscode-cookbooks/selinux"]
 	path = opscode-cookbooks/selinux
 	url = https://github.com/opscode-cookbooks/selinux
+[submodule "opscode-cookbooks/yum"]
+	path = opscode-cookbooks/yum
+	url = git://github.com/opscode-cookbooks/yum.git
+[submodule "opscode-cookbooks/ntp"]
+	path = opscode-cookbooks/ntp
+	url = git://github.com/opscode-cookbooks/ntp.git

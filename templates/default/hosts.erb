@@ -1,0 +1,13 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+<% if node[ 'cloudstack' ][ 'mgmt_ipaddr' ] == node[ 'cloudstack' ][ 'nfs_ipaddr' ] -%>
+<%= node[ 'cloudstack' ][ 'mgmt_ipaddr' ] %> <%= node[ 'cloudstack' ][ 'mgmt_fqdn' ] %> <%= node[ 'cloudstack' ][ 'mgmt_hostname' ] %> <%= node[ 'cloudstack' ][ 'nfs_fqdn' ] %> <%= node[ 'cloudstack' ][ 'nfs_hostname' ] %>
+
+<% else -%>
+<%= node[ 'cloudstack' ][ 'mgmt_ipaddr' ] %> <%= node[ 'cloudstack' ][ 'mgmt_fqdn' ] %> <%= node[ 'cloudstack' ][ 'mgmt_hostname' ] %>
+
+<%= node[ 'cloudstack' ][ 'nfs_ipaddr' ] %> <%= node[ 'cloudstack' ][ 'nfs_fqdn' ] %> <%= node[ 'cloudstack' ][ 'nfs_hostname' ] %>
+
+<% end -%>
+<%= node[ 'cloudstack' ][ 'host_ipaddr' ] %> <%= node[ 'cloudstack' ][ 'host_fqdn' ] %> <%= node[ 'cloudstack' ][ 'host_hostname' ] %>

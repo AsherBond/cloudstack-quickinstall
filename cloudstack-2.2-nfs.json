@@ -12,5 +12,5 @@
 		"host_hostname":	"cs-host",
 		"domainname":		"example.jp"
 	},
-	"run_list": [ "recipe[cloudstack-quickinstall::host]" ]
+	"run_list": [ "recipe[cloudstack-quickinstall::nfs]" ]
 }

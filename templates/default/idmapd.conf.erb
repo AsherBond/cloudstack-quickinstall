@@ -3,7 +3,7 @@
 # The following should be set to the local NFSv4 domain name
 # The default is the host's DNS domain name.
 #Domain = local.domain.edu
-Domain = <%= node[ :cloudstack_host ][ :domainname ] %>
+Domain = <%= node[ 'cloudstack' ][ 'domainname' ] %>
 
 # The following is a comma-separated list of Kerberos realm
 # names that should be considered to be equivalent to the
