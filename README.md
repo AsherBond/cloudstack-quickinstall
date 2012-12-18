@@ -67,6 +67,7 @@ Usage
      }
      # chef-solo -c chef-solo -j cs-mgmt.json
 
+Please reboot servers after chef-solo runs successfully.
 
 License and Author
 ==================
