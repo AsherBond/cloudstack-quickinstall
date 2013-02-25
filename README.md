@@ -14,7 +14,7 @@ Attributes
 version setting
 ---------------
 
-* `node[ 'cloudstack' ][ 'version' ]` - CloudStack version (3.0.4 or 2.2.14)
+* `node[ 'cloudstack' ][ 'version' ]` - CloudStack version (4.0.1 or 3.0.4 or 2.2.14)
 
 network settings
 ----------------
@@ -74,7 +74,7 @@ License and Author
 
 * Author:: HIGUCHI Daisuke <d-higuchi@creationline.com>
 
-* Copyright:: 2012, CREATIONLINE,INC.
+* Copyright:: 2012-2013, CREATIONLINE,INC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

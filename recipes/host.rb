@@ -2,7 +2,7 @@
 # Cookbook Name:: cloudstack
 # Recipe:: host
 #
-# Copyright 2012, CREATIONLINE,INC.
+# Copyright 2012-2013, CREATIONLINE,INC.
 #
 # All rights reserved
 #
@@ -26,9 +26,13 @@ package 'bridge-utils'
 #
 # install CloudStack host agent
 #
-execute 'install-cloudstack-host-agent' do
-  cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
-  command 'echo -e "A\ny" | ./install.sh'
+if version =~ /^4\.0\.\d$/
+  package 'cloud-agent'
+elsif version =~ /^[23]\.\d\.\d+$/
+  execute 'install-cloudstack-host-agent' do
+    cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
+    command 'echo -e "A\ny" | ./install.sh'
+  end
 end
 
 #

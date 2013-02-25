@@ -2,7 +2,7 @@
 # Cookbook Name:: cloudstack
 # Recipe:: manager
 #
-# Copyright 2012, CREATIONLINE,INC.
+# Copyright 2012-2013, CREATIONLINE,INC.
 #
 # All rights reserved
 #
@@ -18,20 +18,41 @@ version = node[ 'cloudstack' ][ 'version' ]
 include_recipe 'cloudstack-quickinstall::common'
 
 #
+# mkdir storage NFS sharing (not_if mgmt == nfs)
+#
+if node[ 'cloudstack' ][ 'mgmt_ipaddr' ] == node[ 'cloudstack' ][ 'nfs_ipaddr' ]
+  include_recipe 'cloudstack-quickinstall::nfs'
+end
+
+#
 # install CloudStack management server
 #
-execute 'install-cloudstack-management-server' do
-  cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
-  command 'echo -e "M\ny" | ./install.sh'
+if version =~ /^4\.0\.\d$/
+  package 'cloud-client'
+elsif version =~ /^[23]\.\d\.\d+$/
+  execute 'install-cloudstack-management-server' do
+    cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
+    command 'echo -e "M\ny" | ./install.sh'
+  end
 end
 
 #
 # install CloudStack database server
 #
-execute 'install-cloudstack-database-server' do
-  cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
-  command 'echo -e "D\ny" | ./install.sh'
-  not_if '[ -f /var/cache/local/preseeding/cloudstack-mysql.seed ]'
+if version =~ /^4\.0\.\d$/
+  package 'mysql-server' do
+    action :install
+    not_if '[ -f /var/cache/local/preseeding/cloudstack-mysql.seed ]'
+  end
+  service 'mysqld' do
+    action [ :enable ]
+  end
+elsif version =~ /^[23]\.\d\.\d+$/
+  execute 'install-cloudstack-database-server' do
+    cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
+    command 'echo -e "D\ny" | ./install.sh'
+    not_if '[ -f /var/cache/local/preseeding/cloudstack-mysql.seed ]'
+  end
 end
 
 #
@@ -96,16 +117,21 @@ end
 # mount storage NFS sharing (not_if mgmt == nfs)
 #
 mount "#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}" do
-    device "#{node[ 'cloudstack' ][ 'nfs_ipaddr' ]}:#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}"
-    fstype 'nfs'
+  device "#{node[ 'cloudstack' ][ 'nfs_ipaddr' ]}:#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}"
+  fstype 'nfs'
   not_if { node[ 'cloudstack' ][ 'mgmt_ipaddr' ] == node[ 'cloudstack' ][ 'nfs_ipaddr' ] }
 end
 
 #
 # exec cloud-install-sys-tmplt
 #
+if version =~ /^4\.0\.\d$/
+  sys_tmplt = '/usr/lib64/cloud/common/scripts/storage/secondary/cloud-install-sys-tmplt'
+elsif version =~ /^[23]\.\d\.\d+$/
+  sys_tmplt = '/usr/lib64/cloud/agent/scripts/storage/secondary/cloud-install-sys-tmplt'
+end
 execute 'cloud-install-sys-tmplt' do
-  command "/usr/lib64/cloud/agent/scripts/storage/secondary/cloud-install-sys-tmplt -m #{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ 'nfs_secondary_dir' ]} -f #{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ version ][ 'systemvm_filename' ]} -h kvm -F"
+  command "#{sys_tmplt} -m #{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ 'nfs_secondary_dir' ]} -f #{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ version ][ 'systemvm_filename' ]} -h kvm -F"
 end
 
 #

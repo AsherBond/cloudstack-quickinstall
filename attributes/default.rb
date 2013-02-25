@@ -2,7 +2,7 @@
 # Cookbook Name:: cloudstack
 # Attribute:: default
 #
-# Copyright 2012, CREATIONLINE,INC.
+# Copyright 2012-2013, CREATIONLINE,INC.
 #
 # All rights reserved
 #
@@ -10,7 +10,7 @@
 #
 # version setting
 #
-default[ 'cloudstack' ][ 'version' ] = '3.0.4'
+default[ 'cloudstack' ][ 'version' ] = '4.0.1'
 
 #
 # network settings
@@ -42,14 +42,14 @@ default[ 'cloudstack' ][ 'nfs_primary_dir'   ] = 'primary'
 default[ 'cloudstack' ][ 'nfs_secondary_dir' ] = 'secondary'
 
 #
-# CloudStack 2.2.14
+# CloudStack 4.0.1
 #
-default[ 'cloudstack' ][ '2.2.14' ][ 'tarball_base_uri'  ] = 'http://jaist.dl.sourceforge.net/project/cloudstack/Cloudstack%202.2/2.2.14/'
-default[ 'cloudstack' ][ '2.2.14' ][ 'tarball_basename'  ] = 'CloudStack-2.2.14-1-rhel6.2'
-default[ 'cloudstack' ][ '2.2.14' ][ 'tarball_sha256'    ] = '694df2811d1d4e59646d9e68447a7f6d8f69952de45a28aca81d50394302eeff'
-default[ 'cloudstack' ][ '2.2.14' ][ 'systemvm_base_uri' ] = 'http://download.cloud.com/releases/2.2.0/'
-default[ 'cloudstack' ][ '2.2.14' ][ 'systemvm_filename' ] = 'systemvm.qcow2.bz2'
-default[ 'cloudstack' ][ '2.2.14' ][ 'systemvm_sha256'   ] = '0f6b1e7b2ead2f521ae9d883087e6d0c1fe523496bd774b16a42b320e8c8c57c'
+default[ 'yum' ][ 'cloudstack' ][ 'url'         ] = 'http://cloudstack.apt-get.eu/rhel/4.0/'
+default[ 'yum' ][ 'cloudstack' ][ 'includepkgs' ] = nil
+default[ 'yum' ][ 'cloudstack' ][ 'exclude'     ] = nil
+default[ 'cloudstack' ][ '4.0.1' ][ 'systemvm_base_uri' ] = 'http://download.cloud.com/templates/acton/'
+default[ 'cloudstack' ][ '4.0.1' ][ 'systemvm_filename' ] = 'acton-systemvm-02062012.qcow2.bz2'
+default[ 'cloudstack' ][ '4.0.1' ][ 'systemvm_sha256'   ] = '67dfc81297368ce605449454776a97d69f5c7bf5f90dbfe9cb49046fea3fff8a'
 
 #
 # CloudStack 3.0.4
@@ -60,6 +60,16 @@ default[ 'cloudstack' ][ '3.0.4' ][ 'tarball_sha256'    ] = '0b9b3d38bd33bcf6072
 default[ 'cloudstack' ][ '3.0.4' ][ 'systemvm_base_uri' ] = 'http://download.cloud.com/templates/acton/'
 default[ 'cloudstack' ][ '3.0.4' ][ 'systemvm_filename' ] = 'acton-systemvm-02062012.qcow2.bz2'
 default[ 'cloudstack' ][ '3.0.4' ][ 'systemvm_sha256'   ] = '67dfc81297368ce605449454776a97d69f5c7bf5f90dbfe9cb49046fea3fff8a'
+
+#
+# CloudStack 2.2.14
+#
+default[ 'cloudstack' ][ '2.2.14' ][ 'tarball_base_uri'  ] = 'http://jaist.dl.sourceforge.net/project/cloudstack/Cloudstack%202.2/2.2.14/'
+default[ 'cloudstack' ][ '2.2.14' ][ 'tarball_basename'  ] = 'CloudStack-2.2.14-1-rhel6.2'
+default[ 'cloudstack' ][ '2.2.14' ][ 'tarball_sha256'    ] = '694df2811d1d4e59646d9e68447a7f6d8f69952de45a28aca81d50394302eeff'
+default[ 'cloudstack' ][ '2.2.14' ][ 'systemvm_base_uri' ] = 'http://download.cloud.com/releases/2.2.0/'
+default[ 'cloudstack' ][ '2.2.14' ][ 'systemvm_filename' ] = 'systemvm.qcow2.bz2'
+default[ 'cloudstack' ][ '2.2.14' ][ 'systemvm_sha256'   ] = '0f6b1e7b2ead2f521ae9d883087e6d0c1fe523496bd774b16a42b320e8c8c57c'
 
 #
 # [EOF]
