@@ -19,6 +19,16 @@ include_recipe 'selinux::permissive'
 include_recipe 'ntp'
 
 #
+# modify /etc/hosts
+#
+template '/etc/hosts' do
+  source 'hosts.erb'
+  owner 'root'
+  group 'root'
+  mode 0644
+end
+
+#
 # add CloudStack 4.0.x RPM package repository
 #
 if version =~ /^4\.0\.\d$/
@@ -31,16 +41,6 @@ if version =~ /^4\.0\.\d$/
     exclude     node[ 'yum' ][ 'cloudstack' ][ 'exclude' ]
     action :create
   end
-end
-
-#
-# modify /etc/hosts
-#
-template '/etc/hosts' do
-  source 'hosts.erb'
-  owner 'root'
-  group 'root'
-  mode 0644
 end
 
 #
