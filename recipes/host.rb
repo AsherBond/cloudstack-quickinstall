@@ -43,33 +43,33 @@ service 'rpcbind' do
 end
 
 #
-# enable and start nfs
+# modify /etc/idmapd.conf and restart nfs
 #
 service 'nfs' do
+  supports :restart => true
   action [ :enable, :start ]
 end
-
-#
-# modify /etc/libvirt/qemu.conf and restart libvirtd
-#
-template '/etc/libvirt/qemu.conf' do
-  source 'qemu.conf.erb'
-  owner 'root'
-  group 'root'
-  mode 0644
-end
-service 'libvirtd' do
-  action :restart
-end
-
-#
-# modify /etc/idmapd.conf
-#
 template '/etc/idmapd.conf' do
   source 'idmapd.conf.erb'
   owner 'root'
   group 'root'
   mode 0644
+  notifies :restart, resources( :service => 'nfs' )
+end
+
+#
+# modify /etc/libvirt/qemu.conf and restart libvirtd
+#
+service 'libvirtd' do
+  supports :restart => true
+  action [ :enable, :start ]
+end
+template '/etc/libvirt/qemu.conf' do
+  source 'qemu.conf.erb'
+  owner 'root'
+  group 'root'
+  mode 0644
+  notifies :restart, resources( :service => 'libvirtd' )
 end
 
 #
