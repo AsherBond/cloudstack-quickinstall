@@ -44,9 +44,6 @@ if version =~ /^4\.0\.\d$/
     action :install
     not_if '[ -f /var/cache/local/preseeding/cloudstack-mysql.seed ]'
   end
-  service 'mysqld' do
-    action [ :enable ]
-  end
 elsif version =~ /^[23]\.\d\.\d+$/
   execute 'install-cloudstack-database-server' do
     cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
@@ -58,14 +55,16 @@ end
 #
 # modify /etc/my.cnf and restart MySQL
 #
+service 'mysqld' do
+  supports :restart => true
+  action [ :enable, :start ]
+end
 template '/etc/my.cnf' do
   source 'my.cnf.erb'
   owner 'root'
   group 'root'
   mode 0644
-end
-service 'mysqld' do
-  action :restart
+  notifies :restart, resources( :service => 'mysqld' )
 end
 
 #
