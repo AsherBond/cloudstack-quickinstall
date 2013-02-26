@@ -104,7 +104,7 @@ execute '/usr/bin/cloud-setup-management'
 #
 # mkdir storage NFS sharing (not_if mgmt == nfs)
 #
-directory "#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}" do
+directory node[ 'cloudstack' ][ 'nfs_root_dir' ] do
   owner 'root'
   group 'root'
   mode 00755
@@ -116,7 +116,7 @@ end
 #
 # mount storage NFS sharing (not_if mgmt == nfs)
 #
-mount "#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}" do
+mount node[ 'cloudstack' ][ 'nfs_root_dir' ] do
   device "#{node[ 'cloudstack' ][ 'nfs_ipaddr' ]}:#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}"
   fstype 'nfs'
   not_if { node[ 'cloudstack' ][ 'mgmt_ipaddr' ] == node[ 'cloudstack' ][ 'nfs_ipaddr' ] }
@@ -137,7 +137,7 @@ end
 #
 # umount storage NFS sharing (not_if mgmt == nfs)
 #
-mount "#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}" do
+mount node[ 'cloudstack' ][ 'nfs_root_dir' ] do
   action :umount
   not_if { node[ 'cloudstack' ][ 'mgmt_ipaddr' ] == node[ 'cloudstack' ][ 'nfs_ipaddr' ] }
 end
