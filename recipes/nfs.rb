@@ -18,6 +18,11 @@ version = node[ 'cloudstack' ][ 'version' ]
 include_recipe 'cloudstack-quickinstall::common'
 
 #
+# install nfs-utils
+#
+package 'nfs-utils'
+
+#
 # enable and start rpcbind
 #
 service 'rpcbind' do
@@ -28,6 +33,7 @@ end
 # enable and start nfs
 #
 service 'nfs' do
+  supports :restart => true
   action [ :enable, :start ]
 end
 
@@ -39,6 +45,7 @@ template '/etc/idmapd.conf' do
   owner 'root'
   group 'root'
   mode 0644
+  notifies :restart, resources( :service => 'nfs' )
 end
 
 #
@@ -62,41 +69,34 @@ template '/etc/exports' do
   owner 'root'
   group 'root'
   mode 0644
+  notifies :restart, resources( :service => 'nfs' )
 end
 
 #
-# modify /etc/sysconfig/nfs
+# modify /etc/sysconfig/nfs and restart nfs
 #
 template '/etc/sysconfig/nfs' do
   source 'nfs.erb'
   owner 'root'
   group 'root'
   mode 0644
-end
-#
-# restart nfs
-#
-service 'nfs' do
-  action :restart
+  notifies :restart, resources( :service => 'nfs' )
 end
 
 #
-# modify /etc/sysconfig/iptables
+# modify /etc/sysconfig/iptables and restart iptables
 #
+service 'iptables' do
+  supports :restart => true
+  action :enable
+end
 template '/etc/sysconfig/iptables' do
   source 'iptables.erb'
   owner 'root'
   group 'root'
   mode 0600
+  notifies :restart, resources( :service => 'iptables' )
 end
-
-#
-# restart iptables
-#
-service 'iptables' do
-  action :restart
-end
-
 
 #
 # download system vm
