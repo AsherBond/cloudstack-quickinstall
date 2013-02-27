@@ -8,15 +8,10 @@
 #
 
 #
-# variable settings
-#
-version = node[ 'cloudstack' ][ 'version' ]
-
-#
 # include required recipes
 #
-include_recipe 'yum::epel'
-include_recipe 'cloudstack-quickinstall::common'
+include_recipe 'cloudstack::common'
+include_recipe 'cloudstack::package'
 
 #
 # install bridge-utils
@@ -26,12 +21,15 @@ package 'bridge-utils'
 #
 # install CloudStack host agent
 #
-if version =~ /^4\.0\.\d$/
+case node[ 'cloudstack' ][ 'version' ]
+when '4.0'
   package 'cloud-agent'
-elsif version =~ /^[23]\.\d\.\d+$/
+when '3.0', '2.2'
+  include_recipe 'yum::epel'
   execute 'install-cloudstack-host-agent' do
-    cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
+    cwd "/root/#{node[ 'cloudstack' ][ 'tarball_basename' ]}"
     command 'echo -e "A\ny" | ./install.sh'
+    not_if { ::File.exists?( '/usr/bin/cloud-setup-agent' ) }
   end
 end
 

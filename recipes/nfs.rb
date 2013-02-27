@@ -8,14 +8,9 @@
 #
 
 #
-# variable settings
-#
-version = node[ 'cloudstack' ][ 'version' ]
-
-#
 # include required recipes
 #
-include_recipe 'cloudstack-quickinstall::common'
+include_recipe 'cloudstack::common'
 
 #
 # install nfs-utils
@@ -51,7 +46,8 @@ end
 #
 # mkdir storage NFS sharing (primary/secondary)
 #
-[ node[ 'cloudstack' ][ 'nfs_primary_dir' ], node[ 'cloudstack' ][ 'nfs_secondary_dir' ] ].each do |dir|
+[ node[ 'cloudstack' ][ 'nfs_primary_dir'   ],
+  node[ 'cloudstack' ][ 'nfs_secondary_dir' ] ].each do |dir|
   directory "#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{dir}" do
     owner 'root'
     group 'root'
@@ -101,9 +97,9 @@ end
 #
 # download system vm
 #
-remote_file "#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ version ][ 'systemvm_filename' ]}" do
-  source "#{node[ 'cloudstack' ][ version ][ 'systemvm_base_uri' ]}#{node[ 'cloudstack' ][ version ][ 'systemvm_filename' ]}"
-  checksum node[ 'cloudstack' ][ version ][ 'systemvm_sha256' ]
+remote_file "#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ 'systemvm_filename' ]}" do
+  source "#{node[ 'cloudstack' ][ 'systemvm_base_uri' ]}#{node[ 'cloudstack' ][ 'systemvm_filename' ]}"
+  checksum node[ 'cloudstack' ][ 'systemvm_sha256' ]
   mode 0644
 end
 

@@ -8,47 +8,33 @@
 #
 
 #
-# variable settings
-#
-version = node[ 'cloudstack' ][ 'version' ]
-
-#
 # include required recipes
 #
-include_recipe 'cloudstack-quickinstall::common'
+include_recipe 'cloudstack::common'
+include_recipe 'cloudstack::package'
 
 #
-# mkdir storage NFS sharing (not_if mgmt == nfs)
+# install CloudStack management and database server
 #
-if node[ 'cloudstack' ][ 'mgmt_ipaddr' ] == node[ 'cloudstack' ][ 'nfs_ipaddr' ]
-  include_recipe 'cloudstack-quickinstall::nfs'
-end
-
-#
-# install CloudStack management server
-#
-if version =~ /^4\.0\.\d$/
+case node[ 'cloudstack' ][ 'version' ]
+when '4.0'
   package 'cloud-client'
-elsif version =~ /^[23]\.\d\.\d+$/
-  execute 'install-cloudstack-management-server' do
-    cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
-    command 'echo -e "M\ny" | ./install.sh'
-  end
-end
 
-#
-# install CloudStack database server
-#
-if version =~ /^4\.0\.\d$/
   package 'mysql-server' do
     action :install
-    not_if '[ -f /var/cache/local/preseeding/cloudstack-mysql.seed ]'
+    not_if { ::File.exists?( '/var/cache/local/preseeding/cloudstack-mysql.seed' ) }
   end
-elsif version =~ /^[23]\.\d\.\d+$/
+when '3.0', '2.2'
+  execute 'install-cloudstack-management-server' do
+    cwd "/root/#{node[ 'cloudstack' ][ 'tarball_basename' ]}"
+    command 'echo -e "M\ny" | ./install.sh'
+    not_if { ::File.exists?( '/usr/libexec/mysqld' ) }
+  end
+
   execute 'install-cloudstack-database-server' do
-    cwd "/root/#{node[ 'cloudstack' ][ version ][ 'tarball_basename' ]}"
+    cwd "/root/#{node[ 'cloudstack' ][ 'tarball_basename' ]}"
     command 'echo -e "D\ny" | ./install.sh'
-    not_if '[ -f /var/cache/local/preseeding/cloudstack-mysql.seed ]'
+    not_if { ::File.exists?( '/var/cache/local/preseeding/cloudstack-mysql.seed' ) }
   end
 end
 
@@ -72,7 +58,7 @@ end
 #
 execute 'set-mysql-root-password' do
   command %Q%echo -e "SET PASSWORD = PASSWORD('#{node[ 'cloudstack' ][ 'mysql_root_pass' ]}');\nexit\n" | mysql -u #{node[ 'cloudstack' ][ 'mysql_root_name' ]}%
-  not_if '[ -f /var/cache/local/preseeding/cloudstack-mysql.seed ]'
+  not_if { ::File.exists?( '/var/cache/local/preseeding/cloudstack-mysql.seed' ) }
 end
 
 #
@@ -80,7 +66,14 @@ end
 #
 execute 'cloud-setup-databases' do
   command "cloud-setup-databases #{node[ 'cloudstack' ][ 'mysql_user_name' ]}:#{node[ 'cloudstack' ][ 'mysql_user_pass' ]}@localhost --deploy-as=#{node[ 'cloudstack' ][ 'mysql_root_name' ]}:#{node[ 'cloudstack' ][ 'mysql_root_pass' ]}"
-  not_if '[ -f /var/cache/local/preseeding/cloudstack-mysql.seed ]'
+  not_if { ::File.exists?( '/var/cache/local/preseeding/cloudstack-mysql.seed' ) }
+end
+#
+# exec cloud-setup-management
+#
+execute '/usr/bin/cloud-setup-management' do
+  command '/usr/bin/cloud-setup-management'
+  not_if { ::File.exists?( '/var/cache/local/preseeding/cloudstack-mysql.seed' ) }
 end
 
 #
@@ -94,11 +87,6 @@ directory '/var/cache/local/preseeding' do
   recursive true
 end
 execute 'touch /var/cache/local/preseeding/cloudstack-mysql.seed'
-
-#
-# exec cloud-setup-management
-#
-execute '/usr/bin/cloud-setup-management'
 
 #
 # mkdir storage NFS sharing (not_if mgmt == nfs)
@@ -124,21 +112,9 @@ end
 #
 # exec cloud-install-sys-tmplt
 #
-if version =~ /^4\.0\.\d$/
-  sys_tmplt = '/usr/lib64/cloud/common/scripts/storage/secondary/cloud-install-sys-tmplt'
-elsif version =~ /^[23]\.\d\.\d+$/
-  sys_tmplt = '/usr/lib64/cloud/agent/scripts/storage/secondary/cloud-install-sys-tmplt'
-end
 execute 'cloud-install-sys-tmplt' do
-  command "#{sys_tmplt} -m #{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ 'nfs_secondary_dir' ]} -f #{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ version ][ 'systemvm_filename' ]} -h kvm -F"
-end
-
-#
-# umount storage NFS sharing (not_if mgmt == nfs)
-#
-mount node[ 'cloudstack' ][ 'nfs_root_dir' ] do
-  action :umount
-  not_if { node[ 'cloudstack' ][ 'mgmt_ipaddr' ] == node[ 'cloudstack' ][ 'nfs_ipaddr' ] }
+  command "#{node[ 'cloudstack' ][ 'cloud-install-sys-tmplt' ]} -m #{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ 'nfs_secondary_dir' ]} -f #{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ 'systemvm_filename' ]} -h kvm -F"
+  not_if { ::File.exists?( "#{node[ 'cloudstack' ][ 'nfs_root_dir' ]}/#{node[ 'cloudstack' ][ 'nfs_secondary_dir' ]}/template/tmpl/1/3/template.properties" ) }
 end
 
 #
